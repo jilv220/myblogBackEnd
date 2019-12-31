@@ -15,6 +15,8 @@ public class User {
 
     private String passWord;
 
+    private String role;
+
     public Integer getId() {
         return id;
     }
@@ -37,6 +39,14 @@ public class User {
 
     public void setPassWord(String passWord) {
         this.passWord = passWord;
+    }
+
+    public String getRole() {
+        return this.role;
+    };
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
 }
