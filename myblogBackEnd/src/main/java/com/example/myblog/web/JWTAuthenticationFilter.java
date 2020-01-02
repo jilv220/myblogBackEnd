@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -17,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -58,8 +61,14 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // 查看源代码会发现调用getPrincipal()方法会返回一个实现了`UserDetails`接口的对象
         // 所以就是JwtUser啦
         JwtUser jwtUser = (JwtUser) authResult.getPrincipal();
+        Collection<? extends GrantedAuthority> authority = jwtUser.getAuthorities();
+
+        // 只有一个role
+        String role = authority.iterator().next().getAuthority();
+        String token = JwtTokenUtils.createToken(jwtUser.getUsername(), role,false);
+
         System.out.println("jwtUser:" + jwtUser.toString());
-        String token = JwtTokenUtils.createToken(jwtUser.getUsername(), false);
+        //System.out.println("ROLE:" + role);
 
         // 返回创建成功的token
         // 但是这里创建的token只是单纯的token

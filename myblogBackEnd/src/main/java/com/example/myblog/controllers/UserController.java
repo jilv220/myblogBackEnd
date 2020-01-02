@@ -51,4 +51,11 @@ public class UserController {
         return userRepository.findUserByUserName(userName) != null;
     }
 
+    @DeleteMapping(path="/user/clear")
+    public @ResponseBody String clearAllUser() {
+
+        userRepository.clearAllUser();
+        return "All users removed";
+    }
+
 }

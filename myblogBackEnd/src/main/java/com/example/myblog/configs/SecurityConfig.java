@@ -57,19 +57,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors()
                 .and()
                 .csrf().disable()
-                .exceptionHandling()
-                .authenticationEntryPoint(restAuthenticationEntryPoint)
-                .and()
                 .authorizeRequests()
                 .antMatchers("/api/blogContent/**").authenticated()
+                .antMatchers("/api/user/all").hasRole("ADMIN")
                 .anyRequest().permitAll()
-                .and()
-                .formLogin()
-                .successHandler(successHandler)
-                .failureHandler(failureHandler)
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager()))
                 .addFilter(new JWTAuthorizationFilter(authenticationManager()))
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(restAuthenticationEntryPoint);
     }
 }

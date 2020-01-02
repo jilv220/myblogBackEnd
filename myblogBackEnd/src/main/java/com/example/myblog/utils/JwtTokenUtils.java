@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
+import java.util.HashMap;
 
 public class JwtTokenUtils {
 
@@ -19,11 +20,21 @@ public class JwtTokenUtils {
     // 选择了记住我之后的过期时间为7天
     private static final long EXPIRATION_REMEMBER = 604800L;
 
+    private static final String ROLE_CLAIMS = "rol";
+
     // 创建token
-    public static String createToken(String userName, boolean isRememberMe) {
+    public static String createToken(String userName, String role, boolean isRememberMe) {
+
         long expiration = isRememberMe ? EXPIRATION_REMEMBER : EXPIRATION;
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(ROLE_CLAIMS, role);
+
+        // debug
+        System.out.println("role is : " + role);
+
         return Jwts.builder()
                 .signWith(SignatureAlgorithm.HS512, SECRET)
+                .setClaims(map)
                 .setIssuer(ISS)
                 .setSubject(userName)
                 .setIssuedAt(new Date())
@@ -34,6 +45,10 @@ public class JwtTokenUtils {
     // 从token中获取用户名
     public static String getUserName(String token){
         return getTokenBody(token).getSubject();
+    }
+
+    public static String getUserRole(String token) {
+        return getTokenBody(token).get(ROLE_CLAIMS).toString();
     }
 
     // 是否已过期
